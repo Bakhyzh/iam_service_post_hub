@@ -3,18 +3,24 @@ package com.post_hub.iam_service.service.Impl;
 import com.post_hub.iam_service.mapper.PostMapper;
 import com.post_hub.iam_service.model.constans.ApiErrorMessage;
 import com.post_hub.iam_service.model.dto.post.PostDTO;
+import com.post_hub.iam_service.model.dto.post.PostSearchDTO;
 import com.post_hub.iam_service.model.entity.Post;
 import com.post_hub.iam_service.model.exception.DataExistException;
 import com.post_hub.iam_service.model.exception.NotFoundException;
 import com.post_hub.iam_service.model.request.post.NewPostRequest;
 import com.post_hub.iam_service.model.request.post.UpdatePostRequest;
 import com.post_hub.iam_service.model.response.IamResponse;
+import com.post_hub.iam_service.model.response.PaginationResponse;
 import com.post_hub.iam_service.repositories.PostRepository;
 import com.post_hub.iam_service.service.PostService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 
 @Service
@@ -58,6 +64,25 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(()-> new NotFoundException(ApiErrorMessage.POST_NOT_FOUND_BY_ID.getMessage(postId)));
         post.setDeleted(true);
         postRepository.save(post);
+    }
+
+    @Override
+    public IamResponse<PaginationResponse<PostSearchDTO>> findAllPosts(Pageable pageable) {
+        Page<PostSearchDTO> posts = postRepository.findAll(pageable)
+                .map(postMapper::toPostSearchDto);
+        PaginationResponse<PostSearchDTO> response = new PaginationResponse<>(
+                posts.getContent(),
+                new PaginationResponse.Pagination(
+                        posts.getTotalElements(),
+                        pageable.getPageSize(),
+                        posts.getNumber() + 1,
+                        posts.getTotalPages()
+
+                )
+
+
+        );
+        return IamResponse.creataSuccessful(response);
     }
 
 }
