@@ -8,14 +8,17 @@ import com.post_hub.iam_service.model.entity.Post;
 import com.post_hub.iam_service.model.exception.DataExistException;
 import com.post_hub.iam_service.model.exception.NotFoundException;
 import com.post_hub.iam_service.model.request.post.NewPostRequest;
+import com.post_hub.iam_service.model.request.post.PostSearchRequest;
 import com.post_hub.iam_service.model.request.post.UpdatePostRequest;
 import com.post_hub.iam_service.model.response.IamResponse;
 import com.post_hub.iam_service.model.response.PaginationResponse;
 import com.post_hub.iam_service.repositories.PostRepository;
+import com.post_hub.iam_service.repositories.criteria.PostSearchCriteria;
 import com.post_hub.iam_service.service.PostService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 
@@ -83,6 +86,24 @@ public class PostServiceImpl implements PostService {
 
         );
         return IamResponse.creataSuccessful(response);
+    }
+
+    @Override
+    public IamResponse<PaginationResponse<PostSearchDTO>> searchPost(PostSearchRequest request, Pageable pageable) {
+        Specification<Post> specification = new PostSearchCriteria(request);
+        Page<PostSearchDTO> posts = postRepository.findAll(specification,pageable)
+                .map(postMapper::toPostSearchDto);
+        PaginationResponse<PostSearchDTO> response = PaginationResponse.<PostSearchDTO>builder()
+                .content(posts.getContent())
+                .pagination(PaginationResponse.Pagination.builder()
+                        .total(posts.getTotalElements())
+                        .limit(pageable.getPageSize())
+                        .page(posts.getNumber())
+                        .pages(posts.getTotalPages())
+                        .build())
+                .build();
+        return IamResponse.creataSuccessful(response);
+
     }
 
 }
