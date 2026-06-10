@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface PostService {
     IamResponse<PostDTO> getById(@NotNull Integer postId);
-    IamResponse<PostDTO> createPost(@NotNull NewPostRequest newPostRequest);
+    IamResponse<PostDTO> createPost(@NotNull Integer userId,@NotNull NewPostRequest newPostRequest);
     IamResponse<PostDTO> updatePost(@NotNull Integer postId ,@NotNull UpdatePostRequest updatePostRequest);
     void softDeletePost(@NotNull Integer postId);
     IamResponse<PaginationResponse<PostSearchDTO>> findAllPosts(Pageable pageable);
