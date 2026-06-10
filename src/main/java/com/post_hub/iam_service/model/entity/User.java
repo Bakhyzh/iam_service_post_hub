@@ -16,6 +16,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class User {
+    public static final String ID_FIELD = "id";
+    public static final String USERNAME_NAME_FIELD = "username";
+    public static final String EMAIL_NAME_FILED = "email";
+    public static final String DELETED_FIELD = "deleted";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
