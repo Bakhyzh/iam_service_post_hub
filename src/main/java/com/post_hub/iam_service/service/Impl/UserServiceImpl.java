@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
     @Override
     public IamResponse<UserDTO> getById(Integer userId) {
         User user = userRepository.findByIdAndDeletedFalse(userId).orElseThrow(()-> new NotFoundException(ApiErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(userId)));
@@ -46,6 +48,7 @@ public class UserServiceImpl implements UserService {
             throw new DataExistException(ApiErrorMessage.USER_ALREADY_EXISTS.getMessage(newUserRequest.getEmail()));
         }
         User user = userMapper.createUser(newUserRequest);
+        user.setPassword(passwordEncoder.encode(newUserRequest.getPassword()));
         User saveduser = userRepository.save(user);
         UserDTO userDTO = userMapper.toDto(saveduser);
 
