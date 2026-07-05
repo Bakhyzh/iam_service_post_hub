@@ -31,24 +31,24 @@
 
 ### Role-Specific Permissions:
 - **User**:
-    - Can create, edit, and delete their own posts and comments.
-    - Can create new users.
-    - Limited to managing their own content.
+  - Can create, edit, and delete their own posts and comments.
+  - Can create new users.
+  - Limited to managing their own content.
 - **Admin**:
-    - Can manage all posts and comments.
-    - Has the ability to edit or delete any post or comment.
+  - Can manage all posts and comments.
+  - Has the ability to edit or delete any post or comment.
 - **Super Admin**:
-    - Has full control over all aspects of the system.
-    - Can manage users, including their roles and permissions.
+  - Has full control over all aspects of the system.
+  - Can manage users, including their roles and permissions.
 
 ## Interaction Between Entities:
 - **User**:
-    - **Post** (one-to-many): One user can create many posts.
-    - **Comment** (one-to-many): One user can leave many comments.
-    - **User** (one-to-many): One user can create many other users.
+  - **Post** (one-to-many): One user can create many posts.
+  - **Comment** (one-to-many): One user can leave many comments.
+  - **User** (one-to-many): One user can create many other users.
 
 - **Post**:
-    - **Comment** (one-to-many): One post can contain many comments.
+  - **Comment** (one-to-many): One post can contain many comments.
 
 ## Summary:
 - **User** registers and authenticates.
