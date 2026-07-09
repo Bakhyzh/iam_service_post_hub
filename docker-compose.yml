@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16
+    container_name: iam-postgres
+    environment:
+      POSTGRES_DB: post_hub_local
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  iam-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: iam-service
+    environment:
+      SERVER_PORT: 8189
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: post_hub_local
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_SCHEMA: v1_iam_service
+    ports:
+      - "8189:8189"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
