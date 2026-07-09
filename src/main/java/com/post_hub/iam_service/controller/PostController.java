@@ -29,8 +29,11 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("${end.points.id}")
-    public ResponseEntity<IamResponse<PostDTO>> getById(@PathVariable(name="id") Integer postId){
+    public ResponseEntity<IamResponse<PostDTO>> getById(
+            @PathVariable(name="id") Integer postId)
+    {
         log.trace(ApiLogMessage.NAME_OF_CURRENT_METHOD.getValue(), ApiUtils.getMethodName());
+
         IamResponse<PostDTO> response = postService.getById(postId);
         return ResponseEntity.ok(response);
     }
