@@ -38,7 +38,7 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("${end.points.create}")
-    public ResponseEntity<IamResponse<PostDTO>> createPost(@RequestBody @Valid NewPostRequest newPostRequest){
+    public ResponseEntity<IamResponse<PostDTO>> createComment(@RequestBody @Valid NewPostRequest newPostRequest){
         log.trace(ApiLogMessage.NAME_OF_CURRENT_METHOD.getValue(), ApiUtils.getMethodName());
         //TODO: replace 1 with the real user_id
 
