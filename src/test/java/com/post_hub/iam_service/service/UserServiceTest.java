@@ -79,5 +79,4 @@ public class UserServiceTest {
         verify(userRepository , times(1)).findByIdAndDeletedFalse(999);
         verify(userMapper,times(0)).toDto(testUser);
     }
-
 }
