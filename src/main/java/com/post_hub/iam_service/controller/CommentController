@@ -70,7 +70,7 @@ public class CommentController {
 
     }
     @PostMapping("${end.points.search}")
-    public ResponseEntity<IamResponse<PaginationResponse<PostSearchDTO>>> searchPosts(
+    public ResponseEntity<IamResponse<PaginationResponse<PostSearchDTO>>> searchComment(
             @RequestBody @Valid PostSearchRequest request,
             @RequestParam(name = "page",defaultValue = "0") int page,
             @RequestParam(name = "limit",defaultValue = "10") int limit){
