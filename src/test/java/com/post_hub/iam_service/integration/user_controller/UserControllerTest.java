@@ -52,4 +52,13 @@ public class UserControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
+    #test
+    @Test
+    @Transactional
+    void getAllUsers_200_OK() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/users/all")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 }
