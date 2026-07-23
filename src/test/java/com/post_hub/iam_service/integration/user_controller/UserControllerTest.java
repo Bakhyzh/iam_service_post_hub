@@ -55,9 +55,9 @@ public class UserControllerTest {
     #test
     @Test
     @Transactional
-    void getAllUsers_200_OK() throws Exception{
+    void getById_200_OK() throws Exception{
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/users/all")
+                .get("/users/1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
