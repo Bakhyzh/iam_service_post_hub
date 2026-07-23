@@ -18,6 +18,4 @@ public interface CommentService {
     void softDeletePost(@NotNull Integer postId);
     IamResponse<PaginationResponse<PostSearchDTO>> findAllPosts(Pageable pageable);
     IamResponse<PaginationResponse<PostSearchDTO>> searchPost(@NotNull PostSearchRequest request,Pageable pageable);
- IamResponse<PaginationResponse<PostSearchDTO>> searchPost(@NotNull PostSearchRequest request,Pageable pageable);
- IamResponse<PaginationResponse<PostSearchDTO>> searchPost(@NotNull PostSearchRequest request,Pageable pageable);
 }
