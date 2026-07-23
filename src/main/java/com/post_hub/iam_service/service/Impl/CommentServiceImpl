@@ -1,1 +1,114 @@
+package com.post_hub.iam_service.service.Impl;
 
+import com.post_hub.iam_service.mapper.PostMapper;
+import com.post_hub.iam_service.model.constans.ApiErrorMessage;
+import com.post_hub.iam_service.model.dto.post.PostDTO;
+import com.post_hub.iam_service.model.dto.post.PostSearchDTO;
+import com.post_hub.iam_service.model.entity.Post;
+import com.post_hub.iam_service.model.entity.User;
+import com.post_hub.iam_service.model.exception.DataExistException;
+import com.post_hub.iam_service.model.exception.NotFoundException;
+import com.post_hub.iam_service.model.request.post.NewPostRequest;
+import com.post_hub.iam_service.model.request.post.PostSearchRequest;
+import com.post_hub.iam_service.model.request.post.UpdatePostRequest;
+import com.post_hub.iam_service.model.response.IamResponse;
+import com.post_hub.iam_service.model.response.PaginationResponse;
+import com.post_hub.iam_service.repositories.PostRepository;
+import com.post_hub.iam_service.repositories.UserRepository;
+import com.post_hub.iam_service.repositories.criteria.PostSearchCriteria;
+import com.post_hub.iam_service.service.PostService;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import java.time.LocalDateTime;
+
+@Service
+@RequiredArgsConstructor
+public class CommentServiceImpl implements PostService {
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final PostMapper postMapper;
+    @Override
+    public IamResponse<PostDTO> getById(@NotNull Integer postId) {
+        Post post =postRepository.findByIdAndDeletedFalse(postId)
+                .orElseThrow(()-> new NotFoundException(ApiErrorMessage.POST_NOT_FOUND_BY_ID.getMessage(postId)));
+        PostDTO postDTO = postMapper.toPostDto(post);
+        return IamResponse.creataSuccessful(postDTO);
+    }
+
+    @Override
+    public IamResponse<PostDTO> createPost(@NotNull Integer userId, @NotNull NewPostRequest newPostRequest) {
+        if(postRepository.existsByTitle(newPostRequest.getTitle())){
+            throw new DataExistException(ApiErrorMessage.POST_ALREADY_EXISTS.getMessage(newPostRequest.getTitle()));
+        }
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ApiErrorMessage.USER_NOT_FOUND_BY_ID.getMessage(userId)));
+        Post post = postMapper.createPost(newPostRequest,user);
+        Post savedPost = postRepository.save(post);
+        PostDTO postDTO = postMapper.toPostDto(savedPost);
+        return IamResponse.creataSuccessful(postDTO);
+    }
+
+    @Override
+    public IamResponse<PostDTO> updatePost(@NotNull Integer postId,@NotNull UpdatePostRequest updatePostRequest) {
+        Post post =postRepository.findByIdAndDeletedFalse(postId)
+                .orElseThrow(()-> new NotFoundException(ApiErrorMessage.POST_NOT_FOUND_BY_ID.getMessage(postId)));
+        postMapper.updatePost(post,updatePostRequest);
+        post.setUpdated(LocalDateTime.now());
+        post = postRepository.save(post);
+        PostDTO postDTO = postMapper.toPostDto(post);
+        return IamResponse.creataSuccessful(postDTO);
+    }
+
+    @Override
+    public void softDeletePost(Integer postId) {
+        Post post =postRepository.findByIdAndDeletedFalse(postId)
+                .orElseThrow(()-> new NotFoundException(ApiErrorMessage.POST_NOT_FOUND_BY_ID.getMessage(postId)));
+        post.setDeleted(true);
+        postRepository.save(post);
+    }
+
+    @Override
+    public IamResponse<PaginationResponse<PostSearchDTO>> findAllPosts(Pageable pageable) {
+        Page<PostSearchDTO> posts = postRepository.findAll(pageable)
+                .map(postMapper::toPostSearchDto);
+        PaginationResponse<PostSearchDTO> response = new PaginationResponse<>(
+                posts.getContent(),
+                new PaginationResponse.Pagination(
+                        posts.getTotalElements(),
+                        pageable.getPageSize(),
+                        posts.getNumber() + 1,
+                        posts.getTotalPages()
+
+                )
+
+
+        );
+        return IamResponse.creataSuccessful(response);
+    }
+
+    @Override
+    public IamResponse<PaginationResponse<PostSearchDTO>> searchPost(PostSearchRequest request, Pageable pageable) {
+        Specification<Post> specification = new PostSearchCriteria(request);
+        Page<PostSearchDTO> posts = postRepository.findAll(specification,pageable)
+                .map(postMapper::toPostSearchDto);
+        PaginationResponse<PostSearchDTO> response = PaginationResponse.<PostSearchDTO>builder()
+                .content(posts.getContent())
+                .pagination(PaginationResponse.Pagination.builder()
+                        .total(posts.getTotalElements())
+                        .limit(pageable.getPageSize())
+                        .page(posts.getNumber())
+                        .pages(posts.getTotalPages())
+                        .build())
+                .build();
+        return IamResponse.creataSuccessful(response);
+
+    }
+
+}
