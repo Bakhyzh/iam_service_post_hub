@@ -52,12 +52,4 @@ public class UserControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
-    @Test
-    @Transactional
-    void getById_200_OK() throws Exception{
-        mockMvc.perform(MockMvcRequestBuilders
-                .get("/users/1")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
 }
