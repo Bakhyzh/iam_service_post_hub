@@ -3,6 +3,7 @@ package com.post_hub.iam_service.mapper;
 import com.post_hub.iam_service.model.dto.comment.CommentDTO;
 import com.post_hub.iam_service.model.dto.post.PostDTO;
 import com.post_hub.iam_service.model.dto.post.PostSearchDTO;
+import com.post_hub.iam_service.model.entity.Comment;
 import com.post_hub.iam_service.model.entity.Post;
 import com.post_hub.iam_service.model.entity.User;
 import com.post_hub.iam_service.model.request.comment.NewCommentRequest;
@@ -31,9 +32,9 @@ public interface CommentMapper {
     Post createComment(NewCommentRequest newRequest, User user);
     @Mapping(target = "id",ignore = true)
     @Mapping(target = "created",ignore = true)
-    void updatePost(@MappingTarget Post post , UpdatePostRequest updatePostRequest);
+    void updateComment(@MappingTarget Comment comment , UpdatePostRequest updatePostRequest);
 
 
     @Mapping (target = "createdBy", source = "user.username" )
-    PostSearchDTO toPostSearchDto(Post post);
+    PostSearchDTO toCommentSearchDto(Post post);
 }
