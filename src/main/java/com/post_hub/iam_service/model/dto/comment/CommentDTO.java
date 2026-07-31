@@ -18,4 +18,5 @@ public class CommentDTO implements Serializable {
     private Integer likes;
     private LocalDateTime created;
     private String createdBy;
+
 }
