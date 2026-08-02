@@ -23,13 +23,13 @@ import java.util.Objects;
 )
 public interface CommentMapper {
 
-    CommentDTO toCommentDto(Post post);
+    CommentDTO toCommentDto(Comment comment);
 
     @Mapping(target = "id",ignore = true)
     @Mapping(target = "created",ignore = true)
     @Mapping(source = "user",target = "user")
     @Mapping(target = "createdBy",source= "user.username")
-    Post createComment(NewCommentRequest newRequest, User user);
+    Comment createComment(NewCommentRequest newRequest, User user);
     @Mapping(target = "id",ignore = true)
     @Mapping(target = "created",ignore = true)
     void updateComment(@MappingTarget Comment comment , UpdatePostRequest updatePostRequest);

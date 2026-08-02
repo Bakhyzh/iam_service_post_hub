@@ -1,6 +1,7 @@
 package com.post_hub.iam_service.repositories;
 
 import com.post_hub.iam_service.model.entity.Post;
+import org.flywaydb.core.api.configuration.Configuration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
